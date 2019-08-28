@@ -8,9 +8,9 @@ This is still heavily WIP but so far demonstrates the idea of using Hstack as a 
 **Notes:**
 * the drag gesture seems incompatible with Buttons, so to get tap on items tapGesture is used instead
 * tested with XCode 11 beta 6
+* background colors are for demo and debug purposes - will be removed once ready
 
 **Todo:**
-* cleaner interface (remove tilePadding const)
+* cleaner interface
 * allow item modificators depending on scroll position outside of the scrollview (atm possible but needs to be written witin scrollview which sucks)
-* interface for item tapping
 

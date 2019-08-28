@@ -34,8 +34,11 @@ struct ContentView: View {
         VStack {
         Spacer()
         GeometryReader { geometry in
-            PagingScrollView(itemCount:5 ,pageWidth:geometry.size.width, tileWidth:220){
+            PagingScrollView(itemCount:5 ,pageWidth:geometry.size.width, tileWidth:220, tilePadding: 20){
                 TileView(icon: "1.circle")
+                    .onTapGesture {
+                        print("TAP1")
+                    }
                 TileView(icon: "2.circle")
                 TileView(icon: "3.circle")
                 TileView(icon: "4.circle")
