@@ -1,7 +1,7 @@
 # SwiftUIPagingScrollView
 implementation of generic paging scrollView in SwiftUI since there is not such option with SwiftUI ScrollView implementation
 
-![Example](https://github.com/izakpavel/SwiftUIPagingScrollView/blob/master/example.gif)
+![Example](https://github.com/izakpavel/SwiftUIPagingScrollView/blob/master/exampleRotation.gif)
 
 This is still WIP but so far demonstrates the idea of using Hstack as a container and modifing the items offset based on the drag gesture
 
