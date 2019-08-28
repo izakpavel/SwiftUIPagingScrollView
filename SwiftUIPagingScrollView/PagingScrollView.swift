@@ -83,7 +83,6 @@ struct PagingScrollView: View {
                         self.items[index]
                             .padding()
                             .background(Color.yellow)
-                            //.position(x: CGFloat(index)*(self.tileWidth+self.tilePadding), y:outerGeometry.size.height/2)
                             .offset(x: self.currentScrollOffset(), y: 0)
                             .frame(width: self.tileWidth)
                             .onTapGesture {
