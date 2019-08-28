@@ -5,6 +5,7 @@ This is still heavily WIP but so far demonstrates the idea of using Hstack as a 
 
 Notes:
 * the drag gesture seems incompatible with Buttons, so to get tap on items tapGesture is used instead
+* tested with XCode 11 beta 6
 
 Todo:
 * cleaner interface (remove tilePadding const)
