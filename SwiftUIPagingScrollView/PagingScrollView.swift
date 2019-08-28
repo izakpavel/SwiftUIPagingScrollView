@@ -85,14 +85,6 @@ struct PagingScrollView: View {
         return (currentScrollOffset-leadingOffset) * -1.0
     }
     
-    // future - trying to be able to appy modifiers based of scroll offset
-    func distanceEffect(index:Int)-> CGFloat{
-        let scrollOffset = self.logicalScrollOffset()
-        let trueOffset = CGFloat(index)*(tileWidth+tilePadding)
-        let diff = (scrollOffset-trueOffset)/1000.0
-        return diff
-    }
-    
     var body: some View {
         GeometryReader { outerGeometry in
             HStack(alignment: .center, spacing: self.tilePadding)  {

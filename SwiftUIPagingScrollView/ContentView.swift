@@ -18,9 +18,6 @@ struct TileView: View {
                 Rectangle()
                     .fill(Color.gray)
                     .cornerRadius(20.0)
-                    .padding()
-                    
-                    //.blur(radius:20)
                 Image(systemName: icon)
                     .imageScale(.large)
                     .font(.largeTitle)
@@ -30,19 +27,25 @@ struct TileView: View {
 }
 
 struct ContentView: View {
+    @State private var scrollEffectValue: Double = 13
+    
+    let tileWidth: CGFloat = 220
+    let tilePadding: CGFloat = 20
+    
     var body: some View {
         VStack {
         Spacer()
         GeometryReader { geometry in
-            PagingScrollView(itemCount:5 ,pageWidth:geometry.size.width, tileWidth:220, tilePadding: 20){
-                TileView(icon: "1.circle")
-                    .onTapGesture {
-                        print("TAP1")
+            PagingScrollView(itemCount:5 ,pageWidth:geometry.size.width, tileWidth:self.tileWidth, tilePadding: self.tilePadding){
+                ForEach(1..<6) { index in
+                    GeometryReader { geometry2 in
+                    TileView(icon: "\(index).circle")
+                        .rotation3DEffect(Angle(degrees: Double((geometry2.frame(in: .global).minX - self.tileWidth/2) / -10 )), axis: (x: 2, y: 11, z: 1))
+                        .onTapGesture {
+                            print("TAP \(index)")
+                        }
                     }
-                TileView(icon: "2.circle")
-                TileView(icon: "3.circle")
-                TileView(icon: "4.circle")
-                TileView(icon: "5.circle")
+                }
             }
         }
         Spacer()
