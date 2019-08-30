@@ -67,7 +67,7 @@ struct PagingScrollView: View {
         guard self.itemCount>0 else {
             return 0
         }
-        let offset = self.logicalScrollOffset()
+        let offset = self.logicalScrollOffset(trueOffset: offset)
         let floatIndex = (offset)/(tileWidth+tilePadding)
         var computedIndex = Int(round(floatIndex))
         computedIndex = max(computedIndex, 0)
@@ -80,11 +80,11 @@ struct PagingScrollView: View {
     }
     
     /// logical offset startin at 0 for the first item - this makes computing the page index easier
-    func logicalScrollOffset()->CGFloat {
-        let currentScrollOffset = self.currentScrollOffset()
-        return (currentScrollOffset-leadingOffset) * -1.0
+    func logicalScrollOffset(trueOffset: CGFloat)->CGFloat {
+        return (trueOffset-leadingOffset) * -1.0
     }
     
+   
     var body: some View {
         GeometryReader { outerGeometry in
             HStack(alignment: .center, spacing: self.tilePadding)  {
@@ -108,8 +108,10 @@ struct PagingScrollView: View {
                 }
                 .onEnded { value in
                     // compute nearest index
-                    withAnimation(.easeInOut){
-                        self.activePageIndex = self.indexPageForOffset(self.currentScrollOffset())
+                    let velocityDiff = (value.predictedEndTranslation.width - self.dragOffset)*0.66 // some damping factor to reduce liveness
+                    
+                    withAnimation(.interpolatingSpring(mass: 0.1, stiffness: 20, damping: 1.5, initialVelocity: 0)){
+                        self.activePageIndex = self.indexPageForOffset(self.currentScrollOffset()+velocityDiff)
                         self.dragOffset = 0
                     }
                 }
