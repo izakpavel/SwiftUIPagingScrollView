@@ -5,10 +5,12 @@ implementation of generic paging scrollView in SwiftUI since there is not such o
 
 This is still WIP but so far demonstrates the idea of using Hstack as a container and modifing the items offset based on the drag gesture
 
-**Notes:**
-* the drag gesture seems incompatible with Buttons, so to get tap on items tapGesture is used instead
-* tested with XCode 11 beta 6
-* background colors are for demo and debug purposes - will be removed once ready
+* tested with XCode 11 beta 7
+
+**Recent changes:**
+* Buttons can be now embedded into scrollview
+* Prepared binding to get active page index
+* taking dragging velicoty into account - fast scrolling is more fluid
 
 **Todo:**
 * cleaner interface
