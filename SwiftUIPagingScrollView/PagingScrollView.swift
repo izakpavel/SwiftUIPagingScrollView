@@ -11,9 +11,11 @@ import SwiftUI
 struct PagingScrollView: View {
     let items: [AnyView]
 
-    init<A: View>(itemCount: Int, pageWidth:CGFloat, tileWidth:CGFloat, tilePadding: CGFloat, @ViewBuilder content: () -> A) {
+    init<A: View>(activePageIndex:Binding<Int>, itemCount: Int, pageWidth:CGFloat, tileWidth:CGFloat, tilePadding: CGFloat, @ViewBuilder content: () -> A) {
         let views = content()
         self.items = [AnyView(views)]
+        
+        self._activePageIndex = activePageIndex
         
         self.pageWidth = pageWidth
         self.tileWidth = tileWidth
@@ -27,7 +29,7 @@ struct PagingScrollView: View {
     }
     
     /// index of current page 0..N-1
-    @State var activePageIndex : Int = 0
+    @Binding var activePageIndex : Int
     
     /// pageWidth==frameWidth used to properly compute offsets
     let pageWidth: CGFloat
@@ -52,6 +54,9 @@ struct PagingScrollView: View {
     
     /// number of items; I did not come with the soluion of extracting the right count in initializer
     private let itemCount : Int
+    
+    /// some damping factor to reduce liveness
+    private let scrollDampingFactor: CGFloat = 0.66
     
     /// drag offset during drag gesture
     @State private var dragOffset : CGFloat = 0
@@ -92,23 +97,21 @@ struct PagingScrollView: View {
                 ForEach(0..<self.items.count) { index in
                     
                         self.items[index]
-                            .padding()
-                            .background(Color.yellow)
                             .offset(x: self.currentScrollOffset(), y: 0)
                             .frame(width: self.tileWidth)
                     
                 }
             }
             .offset(x: self.stackOffset, y: 0)
-            .background(Color.green)
+            .background(Color.black.opacity(0.00001)) // hack - this allows gesture recognizing even when background is transparent
             .frame(width: self.contentWidth)
-            .gesture( DragGesture(minimumDistance: 1, coordinateSpace: .local)
+            .simultaneousGesture( DragGesture(minimumDistance: 1, coordinateSpace: .local) // can be changed to simultaneous gesture to work with buttons
                 .onChanged { value in
                         self.dragOffset = value.translation.width
                 }
                 .onEnded { value in
                     // compute nearest index
-                    let velocityDiff = (value.predictedEndTranslation.width - self.dragOffset)*0.66 // some damping factor to reduce liveness
+                    let velocityDiff = (value.predictedEndTranslation.width - self.dragOffset)*self.scrollDampingFactor
                     
                     withAnimation(.interpolatingSpring(mass: 0.1, stiffness: 20, damping: 1.5, initialVelocity: 0)){
                         self.activePageIndex = self.indexPageForOffset(self.currentScrollOffset()+velocityDiff)
