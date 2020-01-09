@@ -58,6 +58,9 @@ struct PagingScrollView: View {
     /// some damping factor to reduce liveness
     private let scrollDampingFactor: CGFloat = 0.66
     
+    /// state of  user dragging interaction
+    @State var dragging: Bool = false
+    
     /// current offset of all items
     @State var currentScrollOffset: CGFloat = 0
     
@@ -83,7 +86,7 @@ struct PagingScrollView: View {
     }
     
     /// current scroll offset applied on items
-    func computeCurrentScrollOffset()->CGFloat {
+    func computeCurrentScrollOffset() -> CGFloat {
         return self.offsetForPageIndex(self.activePageIndex) + self.dragOffset
     }
     
@@ -98,14 +101,17 @@ struct PagingScrollView: View {
             HStack(alignment: .center, spacing: self.tilePadding)  {
                 /// building items into HStack
                 ForEach(0..<self.items.count) { index in
-                    
-                        self.items[index]
-                            .offset(x: self.currentScrollOffset, y: 0)
-                            .frame(width: self.tileWidth)
-                    
+                    self.items[index]
+                        .offset(x: self.dragging ? self.currentScrollOffset : self.offsetForPageIndex(self.activePageIndex), y: 0)
+                        .animation(self.dragging ? .none : .interpolatingSpring(mass: 0.1, stiffness: 20, damping: 1.5, initialVelocity: 0))
+                        .frame(width: self.tileWidth)
                 }
             }
             .onAppear {
+                if self.items.count > 0 && self.activePageIndex == -1 {
+                    self.activePageIndex = 0
+                }
+                
                 self.currentScrollOffset = self.offsetForPageIndex(self.activePageIndex)
             }
             .offset(x: self.stackOffset, y: 0)
@@ -113,18 +119,18 @@ struct PagingScrollView: View {
             .frame(width: self.contentWidth)
             .simultaneousGesture( DragGesture(minimumDistance: 1, coordinateSpace: .local) // can be changed to simultaneous gesture to work with buttons
                 .onChanged { value in
+                    self.dragging = true
                     self.dragOffset = value.translation.width
                     self.currentScrollOffset = self.computeCurrentScrollOffset()
                 }
                 .onEnded { value in
+                    self.dragging = false
                     // compute nearest index
                     let velocityDiff = (value.predictedEndTranslation.width - self.dragOffset)*self.scrollDampingFactor
                     let newPageIndex = self.indexPageForOffset(self.currentScrollOffset+velocityDiff)
                     self.dragOffset = 0
-                    withAnimation(.interpolatingSpring(mass: 0.1, stiffness: 20, damping: 1.5, initialVelocity: 0)){
-                        self.activePageIndex = newPageIndex
-                        self.currentScrollOffset = self.computeCurrentScrollOffset()
-                    }
+                    self.activePageIndex = newPageIndex
+                    self.currentScrollOffset = self.computeCurrentScrollOffset()
                 }
             )
         }
