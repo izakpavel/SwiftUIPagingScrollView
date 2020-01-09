@@ -103,7 +103,7 @@ struct PagingScrollView: View {
                 ForEach(0..<self.items.count) { index in
                     self.items[index]
                         .offset(x: self.dragging ? self.currentScrollOffset : self.offsetForPageIndex(self.activePageIndex), y: 0)
-                        .animation(.interpolatingSpring(mass: 0.1, stiffness: 20, damping: 1.5, initialVelocity: 0))
+                        .animation(self.dragging ? .none : .interpolatingSpring(mass: 0.1, stiffness: 20, damping: 1.5, initialVelocity: 0))
                         .frame(width: self.tileWidth)
                 }
             }
