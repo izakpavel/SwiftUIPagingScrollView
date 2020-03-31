@@ -100,7 +100,6 @@ struct PagingScrollView: View {
                 ForEach(0..<self.items.count) { index in
                     
                         self.items[index]
-                            .offset(x: self.currentScrollOffset, y: 0)
                             .frame(width: self.tileWidth)
                     
                 }
@@ -111,6 +110,7 @@ struct PagingScrollView: View {
             .offset(x: self.stackOffset, y: 0)
             .background(Color.black.opacity(0.00001)) // hack - this allows gesture recognizing even when background is transparent
             .frame(width: self.contentWidth)
+            .offset(x: self.currentScrollOffset, y: 0)
             .simultaneousGesture( DragGesture(minimumDistance: 1, coordinateSpace: .local) // can be changed to simultaneous gesture to work with buttons
                 .onChanged { value in
                     self.dragOffset = value.translation.width
