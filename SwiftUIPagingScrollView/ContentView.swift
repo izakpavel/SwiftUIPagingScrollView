@@ -9,20 +9,12 @@
 import SwiftUI
 
 struct TileView: View {
-    
     let icon: String
     
     var body: some View {
-        VStack {
-            ZStack {
-                Rectangle()
-                    .fill(Color.gray)
-                    .cornerRadius(20.0)
-                Image(systemName: icon)
-                    .imageScale(.large)
-                    .font(.largeTitle)
-            }
-        }
+        RoundedRectangle(cornerRadius: 20).fill(Color.gray)
+            .overlay(Image(systemName: icon).imageScale(.large))
+            .frame(height: 128)
     }
 }
 
@@ -36,11 +28,9 @@ struct ContentView: View {
     
     
     var body: some View {
-        VStack {
-        Spacer()
-        GeometryReader { geometry in
-            PagingScrollView(activePageIndex: self.$activePageIndex, itemCount:self.numberOfTiles ,pageWidth:geometry.size.width, tileWidth:self.tileWidth, tilePadding: self.tilePadding){
-                ForEach(0 ..< self.numberOfTiles) { index in
+        
+            PagingScrollView(activePageIndex: self.$activePageIndex, tileWidth:self.tileWidth, tilePadding: self.tilePadding){
+                ForEach(0 ..< self.numberOfTiles, id: \.self) { index in
                     GeometryReader { geometry2 in
                         TileView(icon: "\(index + 1).circle")
                             .rotation3DEffect(Angle(degrees: Double((geometry2.frame(in: .global).minX - self.tileWidth*0.5) / -10 )), axis: (x: 2, y: 11, z: 1))
@@ -50,14 +40,8 @@ struct ContentView: View {
                     }
                 }
             }
-        }
-        Spacer()
-        }
-    }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
+            .frame(height: 128)
+            
+            
     }
 }
